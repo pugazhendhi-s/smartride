@@ -1,5 +1,8 @@
 package com.smartride.payment;
 
+import com.smartride.exception.InsufficientBalanceException;
+import com.smartride.util.*;
+
 public class Wallet implements Payment{
     private final String walletID;
     private double balance;
@@ -18,15 +21,19 @@ public class Wallet implements Payment{
     }
 
     @Override
-    public boolean processPayment(double amount) {
+    public boolean processPayment(double amount) throws InsufficientBalanceException {
         if (balance < amount) {
-            System.out.println("Insufficient Wallet balance. Available: Rs " + balance);
-            return false;
+            throw new InsufficientBalanceException(
+                    "Insufficient wallet balance",
+                    amount,      // required
+                    balance,     // available
+                    "Wallet"     // payment method
+            );
         }
 
         this.balance -= amount;
-        lastTransactionID = "WALLET_TXN_" + System.currentTimeMillis();
-        System.out.println("Wallet payment successful: Rs " + amount);
+        lastTransactionID = IDGenerator.generateTransactionID(getPaymentMethod());
+        LoggerUtil.info("Wallet payment successful: Rs " + amount);
         return true;
     }
 
@@ -43,7 +50,7 @@ public class Wallet implements Payment{
     // Wallet-specific methods
     public void addMoney(double amount) {
         this.balance += amount;
-        System.out.println("Added Rs " + amount + " to wallet. New balance: Rs " + balance);
+        LoggerUtil.info("Added Rs " + amount + " to wallet. New balance: Rs " + balance);
     }
 
     public double getBalance() {
