@@ -1,5 +1,8 @@
 package com.smartride.payment;
 
+import com.smartride.util.IDGenerator;
+import com.smartride.util.LoggerUtil;
+
 public class CardPayment implements Payment{
     private final String cardNumber;
     private final String cardHolderName;
@@ -22,15 +25,15 @@ public class CardPayment implements Payment{
     @Override
     public boolean processPayment(double amount) {
         if (!isValid) {
-            System.out.println("Invalid card details. Payment failed.");
+            LoggerUtil.debug("Invalid card details. Payment failed.");
             return false;
         }
         // Simulate card processing
-        System.out.println("Processing " + cardType + " card payment of Rs " + amount);
+        LoggerUtil.debug("Processing " + cardType + " card payment of Rs " + String.format("%.2f",amount));
 
         // Simulate bank verification (always succeeds in our demo)
-        lastTransactionID = "CARD_TXN_" + System.currentTimeMillis();
-        System.out.println("Card payment successful!");
+        lastTransactionID = IDGenerator.generateTransactionID(getPaymentMethod());
+        LoggerUtil.info("Card payment successful!");
         return true;
     }
 

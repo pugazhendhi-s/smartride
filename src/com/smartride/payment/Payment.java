@@ -1,12 +1,14 @@
 package com.smartride.payment;
 
+import com.smartride.exception.InsufficientBalanceException;
+
 public interface Payment {
     /**
      * Process a payment for the given amount
      * @param amount Amount to be paid
      * @return true if payment successful, false otherwise
      */
-    boolean processPayment(double amount);
+    boolean processPayment(double amount) throws InsufficientBalanceException;
 
     /**
      * Get the payment method name

@@ -1,8 +1,10 @@
 package com.smartride.payment;
 
+import com.smartride.util.*;
+
 public class UpiPayment implements Payment {
-    private String upiID;
-    private String userName;
+    private final String upiID;
+    private final String userName;
     private String lastTransactionID;
     private boolean isVerified;
 
@@ -16,14 +18,14 @@ public class UpiPayment implements Payment {
     @Override
     public boolean processPayment(double amount) {
         if (!isVerified) {
-            System.out.println("Invalid UPI ID. Payment failed.");
+            LoggerUtil.debug("Invalid UPI ID. Payment failed.");
             return false;
         }
-        System.out.println("Sending payment request to UPI ID: " + upiID);
-        System.out.println("Amount: Rs " + amount);
+        LoggerUtil.debug("Sending payment request to UPI ID: " + upiID);
+        LoggerUtil.debug("Amount: Rs " + amount);
 
-        lastTransactionID = "UPI_TXN_" + System.currentTimeMillis();
-        System.out.println("UPI payment successful!");
+        lastTransactionID = IDGenerator.generateTransactionID(getPaymentMethod());
+        LoggerUtil.info("UPI payment successful!");
         return true;
     }
 
